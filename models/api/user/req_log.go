@@ -1,7 +1,6 @@
-package api
+package user
 
-type Registration struct {
+type LoginRequest struct {
 	Phone    string `json:"phone"`
-	Name     string `json:"name"`
 	Password string `json:"password"`
 }

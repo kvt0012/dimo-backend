@@ -2,12 +2,10 @@ package recsys
 
 import (
 	"bufio"
+	"dimo-backend/config"
 	"encoding/json"
 	"fmt"
-	"github.com/joho/godotenv"
-	"log"
 	"net"
-	"os"
 	"strconv"
 	"strings"
 )
@@ -44,13 +42,9 @@ type RecommendResult struct {
 
 func SequenceRequest(sequence []int64, itemIds []int64) ([]int64, error) {
 
-	if err := godotenv.Load(); err != nil {
-		log.Print("No .env file found")
-		return nil, err
-	}
-	host, _ := os.LookupEnv("SEQUENCE_HOST")
-	port, _ := os.LookupEnv("SEQUENCE_PORT")
-	token, _ := os.LookupEnv("SEQUENCE_TOKEN")
+	host := config.SequenceHost
+	port := config.SequencePort
+	token := config.SequenceToken
 
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", host, port))
 	if err != nil {
@@ -84,13 +78,9 @@ func SequenceRequest(sequence []int64, itemIds []int64) ([]int64, error) {
 
 func FactorizationRequest(userId int64, itemIds []int64) ([]int64, error) {
 
-	if err := godotenv.Load(); err != nil {
-		log.Print("No .env file found")
-		return nil, err
-	}
-	host, _ := os.LookupEnv("FACTORIZATION_HOST")
-	port, _ := os.LookupEnv("FACTORIZATION_PORT")
-	token, _ := os.LookupEnv("FACTORIZATION_TOKEN")
+	host := config.FactorizationHost
+	port := config.FactorizationPort
+	token := config.FactorizationToken
 
 	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", host, port))
 	if err != nil {

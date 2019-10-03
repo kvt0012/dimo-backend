@@ -79,12 +79,11 @@ func (u *UserRepoImpl) GetAll() ([]*models.User, error) {
 func (u *UserRepoImpl) Insert(user *models.User) error {
 	insertStatement := `
 	INSERT INTO users (name, phone, password)
-	VALUES ($1, $2, $3)`
-	res, err := u.db.Exec(insertStatement, user.Name, user.Phone, user.Password)
+	VALUES ($1, $2, $3) RETURNING id`
+	err := u.db.QueryRow(insertStatement, user.Name, user.Phone, user.Password).Scan(&user.ID)
 	if err != nil {
 		return err
 	}
-	user.ID, _ = res.LastInsertId()
 	fmt.Println("Record added: ", user)
 	return nil
 }

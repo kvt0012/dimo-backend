@@ -1,0 +1,22 @@
+postgresDB := postgres.ConnectAsDefault()
+	err := postgresDB.SQL.Ping()
+	if err != nil {
+		panic(err)
+	}
+	/*fmt.Println("connection ok")
+	result, _ := recsys.FactorizationRequest(131, []int64{4, 24, 49, 124, 144, 482, 394, 254, 284})
+	fmt.Println(result)
+	result, _ = recsys.SequenceRequest([]int64{1, 234, 2, 38}, []int64{4, 24, 49, 124, 144, 482, 394, 254, 284})
+	fmt.Println(result)*/
+	userRepo := repoimpl.NewUserRepo(postgresDB.SQL)
+	err = userRepo.Insert(&models.User{
+		Name:      "HPP",
+		Phone:     "0838464809",
+		Password:  "123456",
+	})
+	if err != nil {
+		pqErr := err.(*pq.Error)
+		if pqErr.Code == "23505" {
+			fmt.Println("duplicated")
+		}
+	}
