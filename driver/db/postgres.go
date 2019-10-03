@@ -1,4 +1,4 @@
-package driver
+package db
 
 import (
 	"database/sql"
@@ -21,11 +21,11 @@ func ConnectDefault() *PostgresDB {
 		log.Print("No .env file found")
 	}
 	var (
-		host, _ = os.LookupEnv("SQL_HOST")
-		port, _ = os.LookupEnv("SQL_PORT")
+		host, _     = os.LookupEnv("SQL_HOST")
+		port, _     = os.LookupEnv("SQL_PORT")
 		username, _ = os.LookupEnv("SQL_USERNAME")
 		password, _ = os.LookupEnv("SQL_PASSWORD")
-		dbname, _ = os.LookupEnv("SQL_DBNAME")
+		dbname, _   = os.LookupEnv("SQL_DBNAME")
 	)
 	iport, _ := strconv.Atoi(port)
 	return Connect(host, iport, username, password, dbname)

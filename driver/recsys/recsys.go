@@ -1,4 +1,4 @@
-package driver
+package recsys
 
 import (
 	"bufio"
@@ -23,7 +23,6 @@ func intArrayToString(itemIds []int64) string {
 	return itemsList
 }
 
-
 func stringArrayToIntArray(itemIds []string) ([]int64, error) {
 	var itemInts []int64
 	for i := range itemIds {
@@ -38,8 +37,8 @@ func stringArrayToIntArray(itemIds []string) ([]int64, error) {
 }
 
 type RecommendResult struct {
-	Status   string  `json:"status"`
-	Code	 int	 `json:"code"`
+	Status   string   `json:"status"`
+	Code     int      `json:"code"`
 	Predicts []string `json:"predicts"`
 }
 
@@ -80,7 +79,8 @@ func SequenceRequest(sequence []int64, itemIds []int64) ([]int64, error) {
 		return nil, err
 	}
 	finalResult, err := stringArrayToIntArray(result.Predicts)
-	return finalResult, err}
+	return finalResult, err
+}
 
 func FactorizationRequest(userId int64, itemIds []int64) ([]int64, error) {
 
