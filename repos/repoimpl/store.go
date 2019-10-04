@@ -11,6 +11,16 @@ type StoreRepoImpl struct {
 	db *sql.DB
 }
 
+func (s *StoreRepoImpl) CountByBrand(brandId int64) (int, error) {
+	var count int
+	err := s.db.QueryRow(`
+		SELECT COUNT (id)
+		FROM stores WHERE brand_id=$1`, brandId).Scan(&count)
+	if err != nil {
+		return count, err
+	}
+	return count, nil
+}
 
 func (s *StoreRepoImpl) GetByID(id int64) (*models.Store, error) {
 	queryStatement := `SELECT id, brand_id, subname, avg_rating, num_rating,
@@ -23,15 +33,15 @@ func (s *StoreRepoImpl) GetByID(id int64) (*models.Store, error) {
 	defer rows.Close()
 	rows.Next()
 	store := models.Store{}
-	var brand_id int64
+	var brandId int64
 	brandRepo := NewBrandRepo(s.db)
 
-	err = rows.Scan(&store.ID, &brand_id, &store.SubName, &store.AvgRating, &store.NumRating,
-					&store.Address, &store.Latitude, &store.Longitude, &store.District, &store.City)
-	brand, _ := brandRepo.GetByID(brand_id)
+	err = rows.Scan(&store.ID, &brandId, &store.SubName, &store.AvgRating, &store.NumRating,
+		&store.Address, &store.Latitude, &store.Longitude, &store.District, &store.City)
+	brand, _ := brandRepo.GetByID(brandId)
 	store.BrandName = brand.Name
 	store.Category = brand.Category
-	store.ImageUrl = brand.ImageUrl
+	store.LogoUrl = brand.LogoUrl
 	if err != nil {
 		return &store, err
 	}
@@ -50,13 +60,13 @@ func (s *StoreRepoImpl) GetAll() ([]*models.Store, error) {
 	brandRepo := NewBrandRepo(s.db)
 	for rows.Next() {
 		store := models.Store{}
-		var brand_id int64
-		err = rows.Scan(&store.ID, &brand_id, &store.SubName, &store.AvgRating, &store.NumRating,
+		var brandId int64
+		err = rows.Scan(&store.ID, &brandId, &store.SubName, &store.AvgRating, &store.NumRating,
 			&store.Address, &store.Latitude, &store.Longitude, &store.District, &store.City)
-		brand, _ := brandRepo.GetByID(brand_id)
+		brand, _ := brandRepo.GetByID(brandId)
 		store.BrandName = brand.Name
 		store.Category = brand.Category
-		store.ImageUrl = brand.ImageUrl
+		store.LogoUrl = brand.LogoUrl
 		if err != nil {
 			break
 		}
@@ -94,7 +104,7 @@ func (s *StoreRepoImpl) GetByBrandName(brandName string) ([]*models.Store, error
 		}
 		store.BrandName = brand.Name
 		store.Category = brand.Category
-		store.ImageUrl = brand.ImageUrl
+		store.LogoUrl = brand.LogoUrl
 		stores = append(stores, &store)
 	}
 	err = rows.Err()
@@ -117,19 +127,19 @@ func (s *StoreRepoImpl) GetByCity(city string) ([]*models.Store, error) {
 	brandRepo := NewBrandRepo(s.db)
 	for rows.Next() {
 		store := models.Store{}
-		var brand_id int64
-		err = rows.Scan(&store.ID, &brand_id, &store.SubName, &store.AvgRating, &store.NumRating,
+		var brandId int64
+		err = rows.Scan(&store.ID, &brandId, &store.SubName, &store.AvgRating, &store.NumRating,
 			&store.Address, &store.Latitude, &store.Longitude, &store.District, &store.City)
 		if err != nil {
 			break
 		}
-		brand, err := brandRepo.GetByID(brand_id)
+		brand, err := brandRepo.GetByID(brandId)
 		if err != nil {
 			continue
 		}
 		store.BrandName = brand.Name
 		store.Category = brand.Category
-		store.ImageUrl = brand.ImageUrl
+		store.LogoUrl = brand.LogoUrl
 		stores = append(stores, &store)
 	}
 	err = rows.Err()
@@ -152,19 +162,19 @@ func (s *StoreRepoImpl) GetByDistrict(district string) ([]*models.Store, error) 
 	brandRepo := NewBrandRepo(s.db)
 	for rows.Next() {
 		store := models.Store{}
-		var brand_id int64
-		err = rows.Scan(&store.ID, &brand_id, &store.SubName, &store.AvgRating, &store.NumRating,
+		var brandId int64
+		err = rows.Scan(&store.ID, &brandId, &store.SubName, &store.AvgRating, &store.NumRating,
 			&store.Address, &store.Latitude, &store.Longitude, &store.District, &store.City)
 		if err != nil {
 			break
 		}
-		brand, err := brandRepo.GetByID(brand_id)
+		brand, err := brandRepo.GetByID(brandId)
 		if err != nil {
 			continue
 		}
 		store.BrandName = brand.Name
 		store.Category = brand.Category
-		store.ImageUrl = brand.ImageUrl
+		store.LogoUrl = brand.LogoUrl
 		stores = append(stores, &store)
 	}
 	err = rows.Err()
@@ -199,7 +209,7 @@ func (s *StoreRepoImpl) GetByCategory(category string) ([]*models.Store, error) 
 			}
 			store.BrandName = brand.Name
 			store.Category = brand.Category
-			store.ImageUrl = brand.ImageUrl
+			store.LogoUrl = brand.LogoUrl
 			stores = append(stores, &store)
 		}
 		err = rows.Err()

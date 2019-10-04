@@ -9,5 +9,7 @@ type StoreRepo interface {
 	GetByCategory(category string) ([]*models.Store, error)
 	GetByCity(city string) ([]*models.Store, error)
 	GetByDistrict(district string) ([]*models.Store, error)
-}
 
+	UpdateByID(store *models.Store) error
+	CountByBrand(brandId int64) (int, error)
+}

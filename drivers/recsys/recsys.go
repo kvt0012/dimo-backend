@@ -46,7 +46,7 @@ func SequenceRequest(sequence []int64, itemIds []int64) ([]int64, error) {
 	port := config.SequencePort
 	token := config.SequenceToken
 
-	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", host, port))
+	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", host, port))
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func FactorizationRequest(userId int64, itemIds []int64) ([]int64, error) {
 	port := config.FactorizationPort
 	token := config.FactorizationToken
 
-	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%s", host, port))
+	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", host, port))
 	if err != nil {
 		return nil, err
 	}

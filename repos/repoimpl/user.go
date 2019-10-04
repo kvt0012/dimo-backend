@@ -16,7 +16,7 @@ func NewUserRepo(db *sql.DB) repos.UserRepo {
 }
 
 func (u *UserRepoImpl) GetByID(id int64) (*models.User, error) {
-	queryStatement := `SELECT id, name, phone, password, image_url, city 
+	queryStatement := `SELECT id, name, phone, password, image_url, city, created_at 
 						FROM users WHERE id=$1`
 	rows, err := u.db.Query(queryStatement, id)
 	defer rows.Close()
@@ -26,7 +26,7 @@ func (u *UserRepoImpl) GetByID(id int64) (*models.User, error) {
 	defer rows.Close()
 	rows.Next()
 	user := models.User{}
-	err = rows.Scan(&user.ID, &user.Name, &user.Phone, &user.Password, &user.ImageUrl, &user.City)
+	err = rows.Scan(&user.ID, &user.Name, &user.Phone, &user.Password, &user.ImageUrl, &user.City, &user.CreatedAt)
 	if err != nil {
 		return &user, err
 	}
@@ -34,7 +34,7 @@ func (u *UserRepoImpl) GetByID(id int64) (*models.User, error) {
 }
 
 func (u *UserRepoImpl) GetByPhone(phone string) (*models.User, error) {
-	queryStatement := `SELECT id, name, phone, password, image_url, city 
+	queryStatement := `SELECT id, name, phone, password, image_url, city, created_at 
 						FROM users WHERE phone=$1`
 	rows, err := u.db.Query(queryStatement, phone)
 	if err != nil {
@@ -43,7 +43,7 @@ func (u *UserRepoImpl) GetByPhone(phone string) (*models.User, error) {
 	defer rows.Close()
 	rows.Next()
 	user := models.User{}
-	err = rows.Scan(&user.ID, &user.Name, &user.Phone, &user.Password, &user.ImageUrl, &user.City)
+	err = rows.Scan(&user.ID, &user.Name, &user.Phone, &user.Password, &user.ImageUrl, &user.City, &user.CreatedAt)
 	if err != nil {
 		return &user, err
 	}
@@ -52,8 +52,7 @@ func (u *UserRepoImpl) GetByPhone(phone string) (*models.User, error) {
 
 func (u *UserRepoImpl) GetAll() ([]*models.User, error) {
 	users := make([]*models.User, 0)
-	rows, err := u.db.Query(`SELECT * FROM users 
-									WHERE name NOT LIKE '%dummy%'`)
+	rows, err := u.db.Query(`SELECT id, name, phone, password, image_url, city, created_at FROM users`)
 	if err != nil {
 		return users, err
 	}

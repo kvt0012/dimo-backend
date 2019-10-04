@@ -35,6 +35,29 @@ type ReviewRepoImpl struct {
 	db *sql.DB
 }
 
+func (r *ReviewRepoImpl) GetByStoreUserID(userId, storeId int64) (*models.Review, error) {
+	queryStatement := `SELECT id, user_id, store_id, rating, comment, created_at
+						FROM reviews WHERE user_id=$1 AND store_id=$2`
+	rows, err := r.db.Query(queryStatement, userId, storeId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	rows.Next()
+	review := models.Review{}
+	err = rows.Scan(&review.ID, &review.UserID, &review.StoreID, &review.Rating,
+		&review.Comment, &review.CreatedAt)
+	if err != nil {
+		return nil, err
+	}
+	urls, err := GetReviewImages(r.db, review.ID)
+	review.ImageUrls = urls
+	if err != nil {
+		return &review, err
+	}
+	return &review, nil
+}
+
 func (r *ReviewRepoImpl) GetAll() ([]*models.Review, error) {
 	queryStatement := `SELECT id, user_id, store_id, rating, comment, created_at
 						FROM reviews`
@@ -73,7 +96,7 @@ func (r *ReviewRepoImpl) GetByID(id int64) (*models.Review, error) {
 	rows.Next()
 	review := models.Review{}
 	err = rows.Scan(&review.ID, &review.UserID, &review.StoreID, &review.Rating,
-					&review.Comment, &review.CreatedAt)
+		&review.Comment, &review.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
@@ -169,5 +192,5 @@ func (r *ReviewRepoImpl) GetByStoreID(storeId int64) ([]*models.Review, error) {
 }
 
 func NewReviewRepo(db *sql.DB) repos.ReviewRepo {
-	return &ReviewRepoImpl{db:db}
+	return &ReviewRepoImpl{db: db}
 }

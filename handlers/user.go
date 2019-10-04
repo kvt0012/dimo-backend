@@ -14,6 +14,10 @@ import (
 	"strconv"
 )
 
+var Default = func(w http.ResponseWriter, r *http.Request) {
+	Respond(w, Message(http.StatusInternalServerError, "Image Captioning Demo Web is currently under maintenance"))
+}
+
 var CreateUser = func(w http.ResponseWriter, r *http.Request) {
 
 	regData := user.RegisterRequest{}

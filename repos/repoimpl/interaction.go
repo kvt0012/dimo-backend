@@ -12,6 +12,10 @@ type InteractionRepoImpl struct {
 	db *sql.DB
 }
 
+func (i *InteractionRepoImpl) GetByUserID(userId int64) ([]*models.Interaction, error) {
+	panic("implement me")
+}
+
 func (i *InteractionRepoImpl) Insert(interaction *models.Interaction) error {
 	insertStatement := `
 	INSERT INTO interactions (user_id, brand_id, type, created_at)
@@ -28,5 +32,5 @@ func (i *InteractionRepoImpl) Insert(interaction *models.Interaction) error {
 }
 
 func NewInteractionRepo(db *sql.DB) repos.InteractionRepo {
-	return &InteractionRepoImpl{db:db}
+	return &InteractionRepoImpl{db: db}
 }

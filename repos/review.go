@@ -8,5 +8,6 @@ type ReviewRepo interface {
 	GetAll() ([]*models.Review, error)
 	GetByUserID(userId int64) ([]*models.Review, error)
 	GetByStoreID(storeId int64) ([]*models.Review, error)
+	GetByStoreUserID(userId, storeId int64) (*models.Review, error)
 	DeleteByID(id int64) error
 }
